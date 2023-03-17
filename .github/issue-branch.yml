@@ -1,0 +1,6 @@
+mode: auto
+branchName: '${issue.number}-${issue.title,[0,32]}'
+autoCloseIssues: true
+branches:
+  - label : enhancement
+    name: main
