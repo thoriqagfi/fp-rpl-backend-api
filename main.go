@@ -41,7 +41,7 @@ func main() {
 	server := gin.Default()
 	server.Use(middleware.CORS())
 
-	routes.Routes(server, userController, custController, sellerController)
+	routes.Routes(server, userController, custController, sellerController, jwtService)
 
 	port := os.Getenv("PORT")
 	if port == " " {
