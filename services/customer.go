@@ -19,6 +19,10 @@ type CustSvc interface {
 	RegisterCust(ctx context.Context, cust dto.UserCreate) (entity.User, error)
 	VerifyCust(ctx context.Context, email string, password string) (bool, error)
 	FindCustByEmail(ctx context.Context, email string) (entity.User, error)
+	FindCustByID(ctx context.Context, id uint64) (entity.User, error)
+	GetAllCust(ctx context.Context) (entity.User, error)
+	UpdateCust(ctx context.Context, custParam dto.UserUpdate, id uint64) (entity.User, error)
+	DeleteCust(ctx context.Context, id uint64) (entity.User, error)
 }
 
 func NewCustSvc(repo repository.CustRepo) CustSvc {
@@ -60,6 +64,42 @@ func (svc *custSvc) VerifyCust(ctx context.Context, email string, password strin
 
 func (svc *custSvc) FindCustByEmail(ctx context.Context, email string) (entity.User, error) {
 	cust, err := svc.custRepo.CheckEmailCust(ctx, email)
+	if err != nil {
+		return entity.User{}, err
+	}
+	return cust, nil
+}
+
+func (svc *custSvc) FindCustByID(ctx context.Context, id uint64) (entity.User, error) {
+	cust, err := svc.custRepo.CheckIDCust(ctx, id)
+	if err != nil {
+		return entity.User{}, err
+	}
+	return cust, nil
+}
+
+func (svc *custSvc) GetAllCust(ctx context.Context) (entity.User, error) {
+	cust, err := svc.custRepo.GetAllCust(ctx)
+	if err != nil {
+		return entity.User{}, err
+	}
+	return cust, nil
+}
+
+func (svc *custSvc) UpdateCust(ctx context.Context, custParam dto.UserUpdate, id uint64) (entity.User, error) {
+	var cust entity.User
+	copier.Copy(&cust, &custParam)
+
+	custParam.ID = id
+	updatedCust, err := svc.custRepo.UpdateCust(ctx, cust, id)
+	if err != nil {
+		return entity.User{}, err
+	}
+	return updatedCust, nil
+}
+
+func (svc *custSvc) DeleteCust(ctx context.Context, id uint64) (entity.User, error) {
+	cust, err := svc.custRepo.DeleteCust(ctx, id)
 	if err != nil {
 		return entity.User{}, err
 	}
